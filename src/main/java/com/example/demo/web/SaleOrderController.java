@@ -27,8 +27,28 @@ public class SaleOrderController {
     @Autowired
     private RedisTemplate redisTemplate;
 
+
     /**
-     * 保存订单
+     * 保存订单 普通提交
+     * @return
+     */
+    @RequestMapping("/saveOrder")
+    @ResponseBody
+    public ResponseVo saveOrder(SaleOrder saleOrder){
+
+        Good good = goodService.getModel(saleOrder.getGoodId());
+
+        saleOrder.setGoodName(good.getName());
+        saleOrder.setMoney(good.getPrice().multiply(new BigDecimal(saleOrder.getGoodNumber())));
+
+        saleOrderService.saveOrder(saleOrder);
+
+        return new ResponseVo().setState(200).setMessage("嘿嘿嘿嘿");
+    }
+
+
+    /**
+     * 保存订单 乐观锁提交
      * @return
      */
     @RequestMapping("/save")
@@ -46,7 +66,7 @@ public class SaleOrderController {
     }
 
     /**
-     * 创建订单
+     * 创建订单 悲观锁提交
      * @return
      */
     @RequestMapping("/create")

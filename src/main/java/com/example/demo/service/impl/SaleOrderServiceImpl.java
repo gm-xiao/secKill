@@ -54,6 +54,41 @@ public class SaleOrderServiceImpl implements SaleOrderService {
         return saleOrderDao.findAll();
     }
 
+    /**
+     * 普通保存订单
+     * @param saleOrder
+     * @return
+     */
+    @Transactional
+    @Override
+    public SaleOrder saveOrder(SaleOrder saleOrder){
+
+        // 1.查询商品
+        Good good =  goodService.getModel(saleOrder.getGoodId());
+        if (null == good){
+            throw new RuntimeException("Good id "+ saleOrder.getGoodId() +" not found");
+        }
+
+        // 2.校验库存
+        if(good.getGoodNumber() < saleOrder.getGoodNumber() || good.getGoodNumber() <= 0){
+            throw new RuntimeException("商品库存不足");
+        }
+
+        // 3.更新库存
+        good.setGoodNumber(good.getGoodNumber() - saleOrder.getGoodNumber());
+        goodService.update(good);
+
+        // 4.保存订单
+        saleOrder = this.insert(saleOrder);
+
+        return saleOrder;
+    }
+
+    /**
+     * 使用乐观锁保存订单
+     * @param saleOrder
+     * @return
+     */
     @Transactional
     @Override
     public SaleOrder saveModelAndUpdateGood(SaleOrder saleOrder) {
@@ -69,7 +104,7 @@ public class SaleOrderServiceImpl implements SaleOrderService {
             throw new RuntimeException("商品库存不足");
         }
 
-        // 3.更新库存
+        // 3.更新库存（乐观锁）
         Integer result = goodService.updateNumber(-saleOrder.getGoodNumber(),good.getId(),3);
 
         // 4.保存订单
@@ -103,6 +138,10 @@ public class SaleOrderServiceImpl implements SaleOrderService {
         template.convertAndSend("appQueue", JSON.toJSONString(queue));
     }
 
+    /**
+     * 使用悲观锁保存订单
+     * @param saleOrder
+     */
     @Transactional
     @Override
     public void createHandle(SaleOrder saleOrder) {

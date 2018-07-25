@@ -19,6 +19,13 @@ public interface SaleOrderService {
      * @param saleOrder
      * @return
      */
+    SaleOrder saveOrder(SaleOrder saleOrder);
+
+    /**
+     * 保存订单及更新库存
+     * @param saleOrder
+     * @return
+     */
     SaleOrder saveModelAndUpdateGood(SaleOrder saleOrder);
 
     /**
