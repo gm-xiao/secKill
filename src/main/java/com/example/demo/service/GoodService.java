@@ -10,7 +10,7 @@ public interface GoodService {
 
     Good update(Good good);
 
-    int updateNumber(Integer number, String id,Integer count);
+    int updateNumber(Integer number, String id);
 
     Good getModel(String id);
 

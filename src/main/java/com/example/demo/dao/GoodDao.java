@@ -27,9 +27,7 @@ public interface GoodDao extends JpaRepository<Good,String> {
      * @param id
      * @return
      */
-    @Query("update Good set goodNumber=?1, version = version +1 where id=?2 and version = ?3")
-    @Modifying
-    @Transactional
+    @Query(value = "update good g set g.good_number=?1, g.version = g.version +1 where g.id=?2 and g.version = ?3", nativeQuery=true)
     int updateGoodNumberById(Integer goodNumber, String id, Integer version);
 
 }

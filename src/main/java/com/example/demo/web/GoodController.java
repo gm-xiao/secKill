@@ -72,7 +72,7 @@ public class GoodController {
 
         Good good = goodService.getModel("0");
 
-        int result = goodService.updateNumber(200,"0",10);
+        int result = goodService.updateNumber(200,"0");
 
         return new ResponseVo().setState(200).setMessage("王扎");
     }

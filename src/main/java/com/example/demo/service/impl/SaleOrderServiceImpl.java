@@ -105,7 +105,7 @@ public class SaleOrderServiceImpl implements SaleOrderService {
         }
 
         // 3.更新库存（乐观锁）
-        Integer result = goodService.updateNumber(-saleOrder.getGoodNumber(),good.getId(),3);
+        Integer result = goodService.updateNumber(-saleOrder.getGoodNumber(),good.getId());
 
         // 4.保存订单
         if (result > 0){

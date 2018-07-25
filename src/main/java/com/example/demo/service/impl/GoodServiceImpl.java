@@ -29,7 +29,7 @@ public class GoodServiceImpl implements GoodService {
     }
 
     @Override
-    public int updateNumber(Integer number, String id, Integer count) {
+    public int updateNumber(Integer number, String id) {
         Good good = this.getModel(id);
         if(good.getGoodNumber() <=0){
             throw new RuntimeException("商品库存已到达底线");
@@ -37,17 +37,13 @@ public class GoodServiceImpl implements GoodService {
 
         Integer goodNumber = good.getGoodNumber() + number;
 
-        if (count > 0){
-            int result = goodDao.updateGoodNumberById(goodNumber, id, good.getVersion());
-            if( result == 0){
-                count--;
-                return this.updateNumber(goodNumber, id, count);
-            }else {
-                return result;
-            }
-        }else {
-           throw new RuntimeException("更新失败");
+        Integer result = goodDao.updateGoodNumberById(goodNumber, id, good.getVersion());
+
+        if ( result == 0){
+            throw new RuntimeException("更新失败");
         }
+
+        return result;
 
     }
 
